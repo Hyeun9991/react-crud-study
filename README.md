@@ -1,6 +1,9 @@
 1. [설치](#설치)
-2. [배포](#배포)
-3. [컴포넌트](#컴포넌트)
+2. [폴더, 파일 설명](#폴더,-파일-설명)
+   * [src/index.js](##src/index.js)
+   * [src/App.js](##src/App.js)
+3. [배포](#배포)
+4. [컴포넌트](#컴포넌트)
 
 # 설치
 Create React App 설치
@@ -128,7 +131,7 @@ function Article(props) {
   );
 }
 ```
-
+#
 ## 이벤트
 이벤트는 props를 이용
 
@@ -183,3 +186,72 @@ function Header({ onChangeMode }) { // 구조분해 할당으로 받기
 * props로 받은 함수는 `props.받은 함수명`으로 호출할 수 있음
 * `e.preventDefault()` : 브라우저의 기본동작을 비활성화 할 수 있음 (새로고침)
 * `({ 여기에 넣어서 })` 구조분해 할당으로 받을 수 있음
+
+#
+
+## state
+* `prop`과 함께 컴포넌트 함수를 다시 실행해서 새로운 `return`값을 만들어주는 또하나의 데이터
+
+### 컴포넌트의 입력과 출력
+* `prop`을 통해 입력된 데이터를 컴포넌트 함수가 처리해서 `return`값을 만들면,
+`return`값이 새로운 UI이가 됨
+### prop과 state 차이점
+* `prop`: 컴포넌트를 사용하는 외부자를 위한 데이터
+* `state`: 컴포넌트를 만드는 내부자를 위한 데이터
+
+### useState
+``` js
+const _mode = useState("WELCOME"); // useState의 초기값
+const mode =  _mode[0]; // 값을 읽을 수 있음
+const setMode = _mode[1]; // 값을 바꿀 수 있음
+console.log("_mode", _mode);
+```
+![](./image/state.png)
+* 0번째 원소는 상태의 값을 **읽을 때** 쓰는 데이터
+* 1번째 원소는 상태의 값을 **변경할 때** 사용하는 함수
+
+위 코드를 더 간결하게 작성
+``` jsx
+const [mode, setMode] = useState('WELCOME');
+```
+* `mode`의 값이 `setMode`를 통해 변경되면 `App` 컴포넌트가 다시 실행됨
+  * `setMode("READ");`
+    * useState가 mode의 값을 `'READ'`로 세팅해줌
+
+
+### 작성한 글 목록을 클릭했을 때 작성한 글을 보여주기
+* `Article` 컴포넌트에 `props`로 `title, body`를 넘겨줄 때 적절한 값을 보내주면 됨
+
+``` jsx
+const [id, setId] = useState(null);
+
+else if (mode === "READ") {
+  let title, body = null;
+  for (let i = 0; i < topics.length; i++) {
+    if (topics[i].id === id) {
+      title = topics[i].title;
+      body = topics[i].body;
+    }
+  }
+  content = <Article title={title} body={body} />;
+}
+
+<Nav
+  topics={topics}
+  onChangeMode={(_id) => {
+    setMode("READ");
+    setId(_id);
+  }}
+/>
+
+```
+* 어떤 글을 선택했는지 알 수 있게 id state 생성
+  * `Nav` 컴포넌트 (글 목록)을 클릭 하면 실행되는 함수에 id state 변경
+* id state와 선택한 topics.id가 같은 것만 필터링
+
+#### Nav로 전달한 id props가 문자열
+* id가 문자열이라서 컴포넌트가 변경이 안됨
+* 입력할 땐 id가 숫자이지만 태그에 속성으로 넘기면 문자열이 됨
+  * `<a id={item.id}></a>`
+* 문자열 id를 숫자로 컴버팅 해주면 됨
+  * `onChangeMode(Number(e.target.id));`

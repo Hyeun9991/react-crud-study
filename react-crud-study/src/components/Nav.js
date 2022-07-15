@@ -1,6 +1,6 @@
 import React from "react";
 
-function Nav({ topics, ohChangeMode }) {
+function Nav({ topics, onChangeMode }) {
   // const lis = [];
   // for (let i = 0; i < props.topics.length; i++) {
   //   let t = props.topics[i];
@@ -24,12 +24,12 @@ function Nav({ topics, ohChangeMode }) {
       <ol>
         {topics.map((item) => (
           <li key={item.id}>
-            <a
-              id={item.id}
+            <a 
+              id={item.id} // 태그에 속성으로 넘기면 문자열이 됨
               href={"/read" + item.id}
               onClick={(e) => {
                 e.preventDefault();
-                ohChangeMode(e.target.id);
+                onChangeMode(Number(e.target.id)); // 문자열 id를 숫자로 컴버팅
               }}
             >
               {item.title}
