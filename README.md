@@ -1,6 +1,6 @@
-[1. 설치](#설치)
-[2. 배포](#배포)
-[3. 컴포넌트](#컴포넌트)
+1. [설치](#설치)
+2. [배포](#배포)
+3. [컴포넌트](#컴포넌트)
 
 # 설치
 Create React App 설치
@@ -15,7 +15,7 @@ npm start
 # 폴더, 파일 설명
 ## src/index.js
 * 입구 파일
-* `npm start` 명령어를 이용해서 cra을 구동시키면 index.js파일을 찾고 적혀있는대로 동작
+* `npm start` 명령어를 이용해서 cra를 구동시키면 index.js파일을 찾고 적혀있는대로 동작
 
 ## src/App.js
 * 화면을 구성하는 UI
@@ -23,9 +23,9 @@ npm start
 ---
 
 # 배포
-`npm start`를 이용해서 실행시킨 애플리케이션은 개발을 위한 애플리케이션임
-개발하기엔 좋지만, 실제로 서비스하기에는 용량도 크고 불필요한 코드들이 있음
-즉, 서비스하기엔 좋지 않음
+* `npm start`를 이용해서 실행시킨 애플리케이션은 개발을 위한 애플리케이션임
+* 개발하기엔 좋지만, 실제로 서비스하기에는 용량도 크고 불필요한 코드들이 있음
+  즉, 서비스하기엔 좋지 않음
 
 ## 서비스에 최적화, 효율적인 배포본을 만드는 방법 
 ### build : 배포판을 만드는 과정
@@ -69,7 +69,7 @@ function App() {
 }
 ```
 
-## props = 속성
+## props
 * 컴포넌트 외부에서 사용하는 입력값
 * img 태그 등 많은 html태그에는 src, width, height 등 **속성**이 존재
   * `<img src='image/logo.png' width='50' height='50'>` 
@@ -128,3 +128,58 @@ function Article(props) {
   );
 }
 ```
+
+## 이벤트
+이벤트는 props를 이용
+
+``` jsx
+// App.js
+<Header
+  title="WEB"
+  onChangeMode={() => {
+    alert("Header");
+  }}
+/>
+
+// Header.js
+function Header(props) {
+  return (
+    <header>
+      <h1>
+        <a
+          href="/"
+          onClick={(e) => {
+            e.preventDefault();
+            props.onChangeMode();
+          }}
+        >
+          {props.title}
+        </a>
+      </h1>
+    </header>
+  );
+}
+
+function Header({ onChangeMode }) { // 구조분해 할당으로 받기
+  return (
+    <header>
+      <h1>
+        <a
+          href="/"
+          onClick={(e) => {
+            e.preventDefault();
+            onChangeMode(); // props 생략 가능
+          }}
+        >
+          {props.title}
+        </a>
+      </h1>
+    </header>
+  );
+}
+```
+* App.js에서 `onChangeMode()` 함수를 props로 보냄
+  * Header컴포넌트의 a태그를 클릭하면 'Header'라는 메세지가 경고창으로 띄워지는 함수
+* props로 받은 함수는 `props.받은 함수명`으로 호출할 수 있음
+* `e.preventDefault()` : 브라우저의 기본동작을 비활성화 할 수 있음 (새로고침)
+* `({ 여기에 넣어서 })` 구조분해 할당으로 받을 수 있음
