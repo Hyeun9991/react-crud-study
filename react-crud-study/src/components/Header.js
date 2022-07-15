@@ -1,10 +1,11 @@
 import React from "react";
 
-function Header() {
+function Header(props) {
+  console.log('props', props.title);
   return (
     <header>
       <h1>
-        <a href="/">WEB</a>
+        <a href="/">{props.title}</a>
       </h1>
     </header>
   );

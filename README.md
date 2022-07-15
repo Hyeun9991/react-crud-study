@@ -1,5 +1,9 @@
-# React CRA 설치
-Create React App
+[1. 설치](#설치)
+[2. 배포](#배포)
+[3. 컴포넌트](#컴포넌트)
+
+# 설치
+Create React App 설치
 ```
 npx create-react-app my-app
 cd my-app
@@ -29,17 +33,17 @@ npm start
 * build 폴더 안에는 index.html파일과 index.html을 의지한 다른파일들이 존재함
   * index.html에는 배포시에 필요없는 공백없이 minimal화 되어 있음
     * 파일 용량을 줄이기 위해
-
+#
 * `npx serve -s build` | build폴더안에 있는 index.html파일을 서비스해주는 웹 서버가 실행됨
   * 명령어 실행 시 접속할 수 있는 url이 나옴
   * 개발환경을 위한 버전이 아니라 실제 서비스할 수 있는 버전의 파일이 만들어짐
 
 --- 
 
-# props
-react는 사용자 정의 태그를 만드는 기술 (react 본질)
+# 컴포넌트
+React는 사용자 정의 태그를 만드는 기술 (react의 본질)
 ## 어떻게 사용자 정의 태그를 만들 수 있나?
-* 사용자 정의 태그 = **Component**
+* 사용자 정의 태그 = **Component (컴포넌트)**
 * **함수**로 만들 수 있음
 * Component는 반드시 **첫 글자는 대문자** 여야 함
 
@@ -61,6 +65,66 @@ function App() {
     <div>
       <Header />
     </div>
+  );
+}
+```
+
+## props = 속성
+* 컴포넌트 외부에서 사용하는 입력값
+* img 태그 등 많은 html태그에는 src, width, height 등 **속성**이 존재
+  * `<img src='image/logo.png' width='50' height='50'>` 
+* 컴포넌트에서도 속성이 있는데 react에서는 속성을 **props**라고 부름
+
+### 컴포넌트에서 props를 넘겨주고, 받는 방법
+``` jsx
+// App.js
+function App() {
+  const topics = [
+    { id: 1, title: 'html', body: 'html is...' },
+    { id: 2, title: 'css', body: 'css is...' },
+    { id: 3, title: 'javascript', body: 'javascript is...' },
+  ]
+
+  return (
+    <div>
+      <Nav topics={topics}/> // props 넘김
+    </div>
+  );
+}
+
+// Nav.js
+function Nav(props) { // props 받음
+  const lis = [];
+  for (let i = 0; i < props.topics.length; i++) {
+    let t = props.topics[i];
+    lis.push(
+      <li key={t.id}>
+        <a href={"/read" + t.id}>{t.title}</a>
+      </li>
+    );
+  }         
+  return (
+    <nav>
+      <ol>{lis}</ol>
+    </nav>
+  );
+}
+```
+* App.js에서 더미 데이터인 `topics`를 만들고 `Nav` 컴포넌트에 `topics`로 props 전달
+* `topics`로 전달 받았기 때문에 `props.topics`로 사용
+
+이 외에 다른 코드
+``` jsx
+// App.js
+<Article title='Welcome' body='Hello, WEB'/>
+
+// Article.js
+function Article(props) {
+  return (
+    <article>
+      <h2>{props.title}</h2>
+      {props.body}
+    </article>
   );
 }
 ```
