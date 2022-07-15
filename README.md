@@ -1,9 +1,16 @@
-1. [설치](#설치)
-2. [폴더, 파일 설명](#폴더,-파일-설명)
-   * [src/index.js](##src/index.js)
-   * [src/App.js](##src/App.js)
-3. [배포](#배포)
-4. [컴포넌트](#컴포넌트)
+# 목차
+* [설치](#설치)
+* [설명](#설명)
+* [배포](#배포)
+* [Component](#component)
+   * [props](#props)
+   * [event](#event)
+   * [state](#state)
+* [CRUD](#crud)
+   * [Read](#read)
+   * [Create](#create)
+
+---
 
 # 설치
 Create React App 설치
@@ -15,7 +22,7 @@ npm start
 
 ---
 
-# 폴더, 파일 설명
+# 설명
 ## src/index.js
 * 입구 파일
 * `npm start` 명령어를 이용해서 cra를 구동시키면 index.js파일을 찾고 적혀있는대로 동작
@@ -43,7 +50,7 @@ npm start
 
 --- 
 
-# 컴포넌트
+# Component
 React는 사용자 정의 태그를 만드는 기술 (react의 본질)
 ## 어떻게 사용자 정의 태그를 만들 수 있나?
 * 사용자 정의 태그 = **Component (컴포넌트)**
@@ -71,6 +78,8 @@ function App() {
   );
 }
 ```
+
+---
 
 ## props
 * 컴포넌트 외부에서 사용하는 입력값
@@ -131,8 +140,10 @@ function Article(props) {
   );
 }
 ```
-#
-## 이벤트
+
+---
+
+## event
 이벤트는 props를 이용
 
 ``` jsx
@@ -187,7 +198,7 @@ function Header({ onChangeMode }) { // 구조분해 할당으로 받기
 * `e.preventDefault()` : 브라우저의 기본동작을 비활성화 할 수 있음 (새로고침)
 * `({ 여기에 넣어서 })` 구조분해 할당으로 받을 수 있음
 
-#
+---
 
 ## state
 * `prop`과 함께 컴포넌트 함수를 다시 실행해서 새로운 `return`값을 만들어주는 또하나의 데이터
@@ -195,10 +206,11 @@ function Header({ onChangeMode }) { // 구조분해 할당으로 받기
 ### 컴포넌트의 입력과 출력
 * `prop`을 통해 입력된 데이터를 컴포넌트 함수가 처리해서 `return`값을 만들면,
 `return`값이 새로운 UI이가 됨
+#
 ### prop과 state 차이점
 * `prop`: 컴포넌트를 사용하는 외부자를 위한 데이터
 * `state`: 컴포넌트를 만드는 내부자를 위한 데이터
-
+#
 ### useState
 ``` js
 const _mode = useState("WELCOME"); // useState의 초기값
@@ -218,8 +230,47 @@ const [mode, setMode] = useState('WELCOME');
   * `setMode("READ");`
     * useState가 mode의 값을 `'READ'`로 세팅해줌
 
+#
+### state를 변경할 때
+#### 원시 데이터 (primitive)
+* `const [value, setValue] = useState(PRIMITIVE);`
+* string
+* number
+* boolean
+``` js
+const [value, setValue] = useState(1); // 원시 데이터
+setValue(2); 
+```
 
-### 작성한 글 목록을 클릭했을 때 작성한 글을 보여주기
+오리지널 데이터와 새로입력된 데이터가 서로 다른 값이므로 랜더링 됨
+
+#
+#### 범 객체
+* `const [value, setValue] = useState(Object);`
+* object
+* array
+
+``` js
+const [value, setValue] = useState([1]); // 범객체 데이터
+value.push(2); // 오리지널 데이터를 바꾼 것
+setValue(value); // 오리지널 데이터를 입력한 것
+```
+오리지널 데이터와 새로 입력된 데이터를 비교한 결과 값이 같기 때문에 랜더링 되지 않음  
+#
+##### 값을 바꾸려면?
+react는 오리지널 데이터와 새로 입력된 데이터를 비교하고 값이 다르면 랜더링 함
+
+1. 오리지널 데이터를 복제
+    * `const = newValue = [...value]`
+2. 복제한 데이터를 변경
+    * `newValue.push(2)`
+3. 변경한 데이터를 set
+    * `setValue(newValue)`
+
+---
+# CRUD
+## Read
+* 작성한 글 목록을 클릭했을 때 작성한 글을 보여주기
 * `Article` 컴포넌트에 `props`로 `title, body`를 넘겨줄 때 적절한 값을 보내주면 됨
 
 ``` jsx
@@ -255,3 +306,88 @@ else if (mode === "READ") {
   * `<a id={item.id}></a>`
 * 문자열 id를 숫자로 컴버팅 해주면 됨
   * `onChangeMode(Number(e.target.id));`
+
+---
+
+## Create
+### 로직
+1. create 버튼을 클릭하면 글을 생성하는 form이 나옴
+2. 글을 입력하고 create 버튼을 누르면 새로운 글이 생성되고, 생성된 글의 상세보기 페이지로 이동
+
+* `<form>` : 어떤 정보를 서버로 전송할 때 사용하는 html 태그
+
+---
+
+``` jsx
+// Create.js
+function Create(props) {
+  return (
+  <article>
+    <h2>Create</h2> 
+    <form onSubmit={e => {
+      e.preventDefault();
+      const title = e.target.title.value;
+      const body = e.target.body.value;
+      props.onCreate(title, body);
+    }}>
+      <p><input type="text" name="title" placeholder="제목을 입력하세요."/></p>
+      <p><textarea type="text" name="body" placeholder="내용을 입력하세요."/></p>
+      <p><input type="submit" value="Create" /></p>
+    </form>
+  </article>
+  );
+}
+
+// App.js
+function App() {
+  const [mode, setMode] = useState("WELCOME");
+  const [id, setId] = useState(null);
+  const [nextId, setNextId] = useState(4);
+  const [topics, setTopics] = useState([
+    { id: 1, title: "html", body: "html is..." },
+    { id: 2, title: "css", body: "css is..." },
+    { id: 3, title: "javascript", body: "javascript is..." },
+  ]);
+
+  let content = null;
+  if (mode === "WELCOME") {
+    // 생략
+  } else if (mode === "READ") {
+    // 생략
+  } else if (mode === "CREATE") {
+    content = (
+      <Create
+        onCreate={(_title, _body) => {
+          // topics에 새로운 원소를 추가해서 목록에 추가
+          const newTopic = { id: nextId, title: _title, body: _body };
+          const newTopics = [...topics];
+          newTopics.push(newTopic);
+          setTopics(newTopics);
+
+          // 글 작성 후 상세보기 페이지로 넘어가기
+          setMode("READ");
+          setId(nextId);
+          setNextId(nextId + 1); // 다음에 추가할 글을 위해
+        }}
+      ></Create>
+    );
+  }
+}
+```
+
+
+#### App.js
+##### [topics 글 목차에 새로운 글 넣기]
+* Create 컴포넌트에 `props.함수` 전달 (_title, _body)
+* `Create`에서 전달받은 props를 활용해서 새로운 배열을 생성
+* 범 객체 state를 변경하기 위해 기존 topics를 복제 후 복제본을 변경
+* `setTopics`에 복제본을 넣어서 랜더링
+
+##### [글 작성 후 상세보기 페이지로 넘어가기]
+* 글 작성 후 mode를  `'READ'` mode로 변경
+* id 변경 `setId(nextId)`
+* 다음에 추가할 글을 위해 `setNextId(nextId + 1)`
+
+#### Create.js
+* form 태그안에 name이 title, body인 태그의 value를 찾기
+* `props.함수`에 넣어서 전달하기
