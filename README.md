@@ -1,6 +1,6 @@
-# 목차
+# 📖 목차
 * [설치](#설치)
-* [설명](#설명)
+* [폴더설명](#폴더설명)
 * [배포](#배포)
 * [Component](#component)
    * [props](#props)
@@ -12,7 +12,7 @@
 
 ---
 
-# 설치
+# 💾 설치
 Create React App 설치
 ```
 npx create-react-app my-app
@@ -22,7 +22,7 @@ npm start
 
 ---
 
-# 설명
+# 📂 폴더설명
 ## src/index.js
 * 입구 파일
 * `npm start` 명령어를 이용해서 cra를 구동시키면 index.js파일을 찾고 적혀있는대로 동작
@@ -32,7 +32,7 @@ npm start
 
 ---
 
-# 배포
+# 💽 배포
 * `npm start`를 이용해서 실행시킨 애플리케이션은 개발을 위한 애플리케이션임
 * 개발하기엔 좋지만, 실제로 서비스하기에는 용량도 크고 불필요한 코드들이 있음
   즉, 서비스하기엔 좋지 않음
@@ -50,9 +50,9 @@ npm start
 
 --- 
 
-# Component
+# 🧩 Component
 React는 사용자 정의 태그를 만드는 기술 (react의 본질)
-## 어떻게 사용자 정의 태그를 만들 수 있나?
+## 만드는 방법
 * 사용자 정의 태그 = **Component (컴포넌트)**
 * **함수**로 만들 수 있음
 * Component는 반드시 **첫 글자는 대문자** 여야 함
@@ -268,7 +268,7 @@ react는 오리지널 데이터와 새로 입력된 데이터를 비교하고 �
     * `setValue(newValue)`
 
 ---
-# CRUD
+# 💻 CRUD
 ## Read
 * 작성한 글 목록을 클릭했을 때 작성한 글을 보여주기
 * `Article` 컴포넌트에 `props`로 `title, body`를 넘겨줄 때 적절한 값을 보내주면 됨
@@ -391,3 +391,7 @@ function App() {
 #### Create.js
 * form 태그안에 name이 title, body인 태그의 value를 찾기
 * `props.함수`에 넣어서 전달하기
+
+---
+
+[🔼 목차로 돌아가기 ](#목차)
