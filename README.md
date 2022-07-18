@@ -9,6 +9,7 @@
 * [CRUD](#crud)
    * [Read](#read)
    * [Create](#create)
+   * [Update](#update)
 
 ---
 
