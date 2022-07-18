@@ -10,6 +10,7 @@
    * [Read](#read)
    * [Create](#create)
    * [Update](#update)
+   * [Delete](#delete)
 
 ---
 
@@ -585,6 +586,50 @@ else if (mode === "UPDATE") {
 2. `updatedTopic`에 변경된 데이터 넣기
 3. `setTopics`에 `newTopics`에 넣어서 복제본 변경
 4. 수정 후 상세보기 페이지로 넘어가기
+
+---
+
+## Delete
+
+``` jsx
+function App() {
+  if (mode === "WELCOME") {
+    // 생략
+  } else if (mode === "READ") {
+    // title, body 구하기 생략
+    contextControl = (
+      <>
+        <li><a> /* Update 생략 */ </a></li>
+        <li>
+          <input
+            type="button"
+            value="Delete"
+            onClick={() => {
+              const newTopics = [];
+              for (let i = 0; i < topics.length; i++) {
+                if (topics[i].id !== id) {
+                  // id가 일치하지 않는 topic들만 push
+                  newTopics.push(topics[i]);
+                }
+              }
+              setTopics(newTopics);
+              setMode("WELCOME");
+            }}
+          />
+        </li>
+      </>
+    );
+  } else if (mode === "CREATE") {
+    // 생략
+  } else if (mode === "UPDATE") {
+    // 생략
+  }
+}
+```
+1. newTopics라는 빈 배열 생성
+2. 기존 topics의 id와 선택한 데이터의 id가 일치하지 않는 데이터만 newTopics(빈 배열)에 넣기
+3. setTopics에 newTopics 넣기
+4. 삭제 후 메인 페이지로 가기
 
 #
 
