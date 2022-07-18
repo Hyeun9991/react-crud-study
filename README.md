@@ -274,26 +274,37 @@ react는 오리지널 데이터와 새로 입력된 데이터를 비교하고 �
 * `Article` 컴포넌트에 `props`로 `title, body`를 넘겨줄 때 적절한 값을 보내주면 됨
 
 ``` jsx
-const [id, setId] = useState(null);
+function App() {
+  const [id, setId] = useState(null);
 
-else if (mode === "READ") {
-  let title, body = null;
-  for (let i = 0; i < topics.length; i++) {
-    if (topics[i].id === id) {
-      title = topics[i].title;
-      body = topics[i].body;
+  let content = null;
+  if (mode === "WELCOME") {
+    // 생략
+  } else if (mode === "READ") {
+    let title, body = null;
+    for (let i = 0; i < topics.length; i++) {
+      if (topics[i].id === id) {
+        title = topics[i].title;
+        body = topics[i].body;
+      }
     }
+    content = <Article title={title} body={body} />;
   }
-  content = <Article title={title} body={body} />;
+
+  return (
+    <div style={{ marginLeft: 10 }}>
+      <Nav
+        topics={topics}
+        onChangeMode={(_id) => {
+          setMode("READ");
+          setId(_id);
+        }}
+      />
+      {content}
+    </div>
+  );
 }
 
-<Nav
-  topics={topics}
-  onChangeMode={(_id) => {
-    setMode("READ");
-    setId(_id);
-  }}
-/>
 
 ```
 * 어떤 글을 선택했는지 알 수 있게 id state 생성
@@ -315,8 +326,7 @@ else if (mode === "READ") {
 2. 글을 입력하고 create 버튼을 누르면 새로운 글이 생성되고, 생성된 글의 상세보기 페이지로 이동
 
 * `<form>` : 어떤 정보를 서버로 전송할 때 사용하는 html 태그
-
----
+<br />
 
 ``` jsx
 // Create.js
@@ -375,23 +385,203 @@ function App() {
 }
 ```
 
-
-#### App.js
-##### [topics 글 목차에 새로운 글 넣기]
+### App.js
+#### [topics 글 목차에 새로운 글 넣기]
 * Create 컴포넌트에 `props.함수` 전달 (_title, _body)
 * `Create`에서 전달받은 props를 활용해서 새로운 배열을 생성
 * 범 객체 state를 변경하기 위해 기존 topics를 복제 후 복제본을 변경
 * `setTopics`에 복제본을 넣어서 랜더링
+<br />
 
-##### [글 작성 후 상세보기 페이지로 넘어가기]
+#### [글 작성 후 상세보기 페이지로 넘어가기]
 * 글 작성 후 mode를  `'READ'` mode로 변경
 * id 변경 `setId(nextId)`
 * 다음에 추가할 글을 위해 `setNextId(nextId + 1)`
+<br />
 
 #### Create.js
 * form 태그안에 name이 title, body인 태그의 value를 찾기
 * `props.함수`에 넣어서 전달하기
 
 ---
+
+## Update
+create,read를 하이브리드해서 구현
+  * 하이브리드: 특정한 목표를 달성하기 위해 두 개 이상의 요소가 합친 것
+### 1. update로 가는 링크 추가
+* a태그를 ul태그로 감싸서 목록화
+``` jsx
+function App() {
+  return (
+    <ul>
+      <li>
+        <a href="/create"> /* Create 생략 */ </a>
+      </li>
+      <li>
+        <a href="/update">Update</a>
+      </li>
+    </ul>
+  )
+}
+```
+
+<br />
+
+### 2. 'READ'모드일 때만 Update 링크가 나오게 하기
+홈에서는 없고 글 목록을 클릭할 때만 보임
+1. contextControl 지역변수 생성 (맥락적으로 노출되는 UI라는 뜻)
+    * `contextControl = <li><a href="/update">Update</a></li>`
+2. Update의 고유한 id를 주소에 추가 (형식 지킬려고)
+3. `onClick` 이벤트 
+    * update mode로 변경
+``` jsx
+// App.js
+let contextControl = null;
+else if (mode === "READ") {
+  // 생략
+  contextControl = (
+    <li>
+      <a
+        href={"/update" + id} 
+        onClick={(e) => {
+          e.preventDefault();
+          setMode("UPDATE");
+        }}
+      >
+        Update
+      </a>
+    </li>
+  );
+} 
+```
+<br />
+
+### 3. 기존에 작성한 title, body 가져와서 변경하고 App으로 전달하기
+> * 수정 기능을 만들기 위해선 Update 버튼을 클릭했을 때 사용자가 작성한 내용을 불러와야 함
+>* `Update` 컴포넌트가 `title, body`의 props를 기본적으로 가지고 있어야 함
+
+``` jsx
+// App.js
+let content = null;
+let contextControl = null;
+if (mode === "WELCOME") {
+  // 생략
+} else if (mode === "READ") {
+  // 생략
+} else if (mode === "CREATE") {
+  // 생략
+} else if (mode === "UPDATE") {
+  let title,
+    body = null;
+  for (let i = 0; i < topics.length; i++) {
+    if (topics[i].id === id) {
+      title = topics[i].title;
+      body = topics[i].body;
+    }
+  }
+  content = (
+    <Update 
+      title={title} // props 전달
+      body={body} 
+      onUpdate={(title, body) => {}} // 전달받은 데이터 인자로 받기
+    ></Update>
+  );
+}
+
+
+// Update.js
+function Update(props) { // props 받음
+  // props를 state로 변경
+  const [title, setTitle] = useState(props.title);
+  const [body, setBody] = useState(props.body);
+
+  return (
+    <article>
+      <h2>Update</h2>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          const title = e.target.title.value; // 입력값
+          const body = e.target.body.value;
+          props.onUpdate(title, body); // 전달
+        }}
+      >
+        <p>
+          <input
+            type="text"
+            name="title"
+            placeholder="제목을 입력하세요."
+            value={title}
+            onChange={(e) => {
+              setTitle(e.target.value); // state 변경
+            }}
+          />
+        </p>
+        <p>
+          // body 생략
+        </p>
+      </form>
+    </article>
+  )
+}
+```
+
+1. title, body를 구해서 `Update` 컴포넌트에 props로 전달
+    * `Update` 컴포넌트에서 props 받기
+  <br/>
+2. **전달 받은 props를 state로 변경**
+    * `props`는 **외부자**가 사용하는 명령이기 때문에 내부에선 변경하지 못함
+      * 내부에서 변경할 수 있는 `state`로 변경
+  <br/>
+3. **onChange event 생성** 
+    * 사용자의 입력값을 구해서 state를 변경
+    * `e.target.value`로 입력값을 구하고 setState로 최종적으로 바꿈
+      * `setTitle(e.target.value);`
+  <br/>
+4. 변경한 `state(title, body)`를 `onUpdate` 함수로 전달
+  <br/>
+<br />
+
+### 4. 변경된 값으로 topics 변경
+``` jsx
+// App.js Update mode
+else if (mode === "UPDATE") {
+  // title, body 구하기
+  let title,
+    body = null;
+  for (let i = 0; i < topics.length; i++) {
+    if (topics[i].id === id) {
+      title = topics[i].title;
+      body = topics[i].body;
+    }
+  }
+
+  content = (
+    <Update 
+      title={title} 
+      body={body} 
+      onUpdate={(title, body) => {
+        const newTopics = [...topics]; // 복제본
+        const updatedTopic = { id: id, title: title, body: body }; 
+        for (let i = 0; i < newTopics.length; i++) {
+          if (newTopics[i].id === id) { // 선택한 topic
+            newTopics[i] = updatedTopic; // 선택한 topic을 updatedTopic로 바꿈
+            break; // 반복문 종료
+          }
+        }
+        setTopics(newTopics); 
+        setMode("READ");
+      }}
+    ></Update>
+  );
+}
+```
+
+1. `topics`  복제본 `newTopics` 생성
+2. `updatedTopic`에 변경된 데이터 넣기
+3. `setTopics`에 `newTopics`에 넣어서 복제본 변경
+4. 수정 후 상세보기 페이지로 넘어가기
+
+#
 
 [🔼 목차로 돌아가기 ](#목차)
