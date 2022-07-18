@@ -529,19 +529,22 @@ function Update(props) { // props 받음
 
 1. title, body를 구해서 `Update` 컴포넌트에 props로 전달
     * `Update` 컴포넌트에서 props 받기
-  <br/>
+<br/>
+
 2. **전달 받은 props를 state로 변경**
     * `props`는 **외부자**가 사용하는 명령이기 때문에 내부에선 변경하지 못함
       * 내부에서 변경할 수 있는 `state`로 변경
-  <br/>
+<br/>
+
 3. **onChange event 생성** 
     * 사용자의 입력값을 구해서 state를 변경
     * `e.target.value`로 입력값을 구하고 setState로 최종적으로 바꿈
       * `setTitle(e.target.value);`
-  <br/>
+<br/>
+
 4. 변경한 `state(title, body)`를 `onUpdate` 함수로 전달
-  <br/>
-<br />
+<br/>
+
 
 ### 4. 변경된 값으로 topics 변경
 ``` jsx
